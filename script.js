@@ -1,8 +1,9 @@
 let feedbackList = [];
 
+// ✅ Fetch feedbacks from Railway backend
 async function fetchFeedbackList() {
     try {
-        const response = await fetch('http://localhost:3000/api/feedback');
+        const response = await fetch('https://feedback-api.up.railway.app/api/feedback');  // ✅ Use Railway URL
         feedbackList = await response.json();
         displayFeedbackList();
     } catch (error) {
@@ -10,6 +11,7 @@ async function fetchFeedbackList() {
     }
 }
 
+// ✅ Display feedbacks
 function displayFeedbackList() {
     const userProfileContainer = document.getElementById('userProfileContainer');
     userProfileContainer.innerHTML = '';
@@ -20,10 +22,12 @@ function displayFeedbackList() {
     });
 }
 
+// ✅ Create profile card for each feedback
 function createUserProfile(feedback, index) {
     const userProfile = document.createElement('div');
     userProfile.className = 'user-profile';
     const date = new Date(feedback.created_at).toLocaleString();
+
     userProfile.innerHTML = `
         <div class="user-icon">👤</div>
         <div class="user-info">
@@ -35,6 +39,7 @@ function createUserProfile(feedback, index) {
     return userProfile;
 }
 
+// ✅ Handle form submit
 document.getElementById('feedbackForm').addEventListener('submit', async function(event) {
     event.preventDefault();
 
@@ -45,21 +50,22 @@ document.getElementById('feedbackForm').addEventListener('submit', async functio
     const feedbackData = { name, email, feedback };
 
     try {
-        const res = await fetch('http://localhost:3000/api/feedback', {
+        const res = await fetch('https://feedback-api.up.railway.app/api/feedback', { // ✅ Use Railway URL
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(feedbackData)
         });
 
         if (res.ok) {
-            fetchFeedbackList();
-            document.getElementById('feedbackForm').reset();
+            fetchFeedbackList(); // Refresh list
+            document.getElementById('feedbackForm').reset(); // Clear form
         }
     } catch (err) {
         console.error('Error saving feedback:', err);
     }
 });
 
+// ✅ Show modal with detailed feedback
 document.getElementById('userProfileContainer').addEventListener('click', function(event) {
     if (event.target.classList.contains('aboutMeBtn')) {
         const index = event.target.getAttribute('data-index');
@@ -74,6 +80,7 @@ document.getElementById('userProfileContainer').addEventListener('click', functi
     }
 });
 
+// ✅ Close modal
 document.querySelector('.close-btn').addEventListener('click', () => {
     document.getElementById('feedbackModal').style.display = 'none';
 });
@@ -83,4 +90,5 @@ window.addEventListener('click', event => {
     }
 });
 
+// ✅ Load feedbacks on page load
 fetchFeedbackList();
